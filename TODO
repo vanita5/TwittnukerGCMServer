@@ -1,0 +1,8 @@
+* The whole Twitter part:
+** Authentication
+** Userstream -> catch mentions
+** Check followers -> New Follower?
+** DMs: Needs full authentication from the user. Be aware of pricacy issues!
+
+* The twitter part(s) run seperate to the backend server itself!
+* Installation tutorial
