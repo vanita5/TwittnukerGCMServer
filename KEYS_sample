@@ -1,6 +1,6 @@
 '''
 Replace x with your API Key from the Google Developer Console
-Rename file to KEY
+Rename file to KEYS
 '''
 
 GCM_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
