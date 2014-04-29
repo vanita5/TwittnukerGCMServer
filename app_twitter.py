@@ -29,10 +29,6 @@ log = logging.getLogger('module')
 #OAuth
 prnt('[API]:')
 try:
-    print KEYS.apikey
-    print KEYS.apisecret
-    print KEYS.accesstoken
-    print KEYS.accesstokensecret
     auth = tweepy.OAuthHandler(KEYS.apikey, KEYS.apisecret)
     auth.set_access_token(KEYS.accesstoken, KEYS.accesstokensecret)
     api = tweepy.API(auth)
@@ -54,7 +50,7 @@ class StreamListener(tweepy.StreamListener):
     def on_status(self, status):
         try:
             if is_mention(status):
-                send_notification('eliahwinkler2@gmail.com', ME.id, status.author.screen_name, status.text)
+                send_notification('eliahwinkler2@gmail.com', ME.id, status.author.screen_name, status.text, 'type_mention')
 
         except Exception, e:
             log.exception('on_status Error\n')
