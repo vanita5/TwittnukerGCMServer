@@ -67,7 +67,7 @@ class StreamListener(tweepy.StreamListener):
             if is_follower(event):
                 send_notification('eliahwinkler2@gmail.com', ME.id, event.source['screen_name'], '', 'type_new_follower')
             elif is_favorite(event):
-                send_notification('eliahwinkler2@gmail.com', ME.id, event.source['screen_name'], 'event.target_object['text']', 'type_favorite')
+                send_notification('eliahwinkler2@gmail.com', ME.id, event.source['screen_name'], event.target_object['text'], 'type_favorite')
             else:
                 return True
 
