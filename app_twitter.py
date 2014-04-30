@@ -41,6 +41,7 @@ except Exception, e:
     exit()
 
 def is_mention(status):
+    if hasattr(status, 'retweeted_status') return False
     for mention in status.entities['user_mentions']:
         if mention['screen_name'] == ME.screen_name:
             return True
@@ -51,12 +52,17 @@ def is_follower(event):
 
 def is_favorite(event):
     return event.event == "favorite" and event.target['screen_name'] == ME.screen_name
+    
+def is_retweet(status):
+    return hasattr(status, 'retweeted_status') and status.retweeted_status.author.screen_name == ME.screen_name
 
 class StreamListener(tweepy.StreamListener):
     def on_status(self, status):
         try:
             if is_mention(status):
                 send_notification('eliahwinkler2@gmail.com', ME.id, status.author.screen_name, status.text, 'type_mention')
+            elif is_retweet(status):
+                send_notification('eliahwinkler2@gmail.com', ME.id, status.retweeted_status.author.screen_name, status.retweeted_status.text, 'type_retweet')
 
         except Exception, e:
             log.exception('on_status Error\n')
