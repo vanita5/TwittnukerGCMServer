@@ -83,6 +83,10 @@ class StreamListener(tweepy.StreamListener):
             pass
 
     def on_error(self, status_code):
+        print str(status_code)
+        if status_code == 420:
+            print "Sending Notification..."
+            send_notification('eliahwinkler2@gmail.com', ME.id, '', '', 'type_error_420')
         return True
 
     def on_timeout(self):
