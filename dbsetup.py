@@ -12,7 +12,7 @@ _CREATE_GCM_TABLE = \
   userid TEXT NOT NULL,
   regid TEXT NOT NULL,
 
-  UNIQUE(userid, regid) ON CONFLICT REPLACE)
+  UNIQUE(userid, regid) ON CONFLICT IGNORE)
 '''
 
 _CREATE_TABLE = \

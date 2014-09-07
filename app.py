@@ -173,9 +173,25 @@ def add_account(db, userid):
         or len(request.json['accountid']) < 1):
         return HTTPError(400, "No account id was given!")
 
-    args = [userid,
+    if ('nmentions' not in request.json or request.json['nmentions'] is None
+        or len(request.json['nmentions']) < 1):
+        request.json['nmentions'] = 0
+
+    if ('ndms' not in request.json or request.json['ndms'] is None
+        or len(request.json['ndms']) < 1):
+        request.json['ndms'] = 0
+
+    if ('nfollower' not in request.json or request.json['nfollower'] is None
+        or len(request.json['nfollower']) < 1):
+        request.json['nfollower'] = 0
+
+    args = [request.json['nmentions'],
+            request.json['ndms'],
+            request.json['nfollower'],
+            userid,
             request.json['accountid']]
-    stmt = 'INSERT INTO accounts (userid, accountid) VALUES(?, ?)'
+
+    stmt = 'INSERT INTO accounts (nmentions, ndms, nfollower, userid, accountid) VALUES(?, ?, ?, ?, ?)'
 
     db.execute(stmt, args)
 
