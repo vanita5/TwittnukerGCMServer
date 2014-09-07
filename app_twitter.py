@@ -14,6 +14,8 @@ import tweepy
 import KEYS
 from app_gcm import *
 import logging
+import sqlite3 as sql
+from app_conf import DBNAME
 
 DEBUG = True
 
@@ -58,12 +60,21 @@ def is_retweet(status):
     return hasattr(status, 'retweeted_status') and status.retweeted_status.author.screen_name == ME.screen_name
 
 class StreamListener(tweepy.StreamListener):
+
+    def __init__(self):
+        super(StreamListener, self).__init__()
+        db = sql.connect(DBNAME)
+        db.row_factory = sql.Row
+
+        user = db.execute('SELECT * FROM gcm').fetchone()
+        self.userid =user['userid'] #TODO Choose the right user
+
     def on_status(self, status):
         try:
             if is_mention(status):
-                send_notification('eliahwinkler2@gmail.com', ME.id, status.author.screen_name, status.text, 'type_mention')
+                send_notification(self.userid, ME.id, status.author.screen_name, status.text, 'type_mention')
             elif is_retweet(status):
-                send_notification('eliahwinkler2@gmail.com', ME.id, status.author.screen_name, status.retweeted_status.text, 'type_retweet')
+                send_notification(self.userid, ME.id, status.author.screen_name, status.retweeted_status.text, 'type_retweet')
 
         except Exception, e:
             log.exception('on_status Error\n')
@@ -72,9 +83,9 @@ class StreamListener(tweepy.StreamListener):
     def on_event(self, event):
         try:
             if is_follower(event):
-                send_notification('eliahwinkler2@gmail.com', ME.id, event.source['screen_name'], '', 'type_new_follower')
+                send_notification(self.userid, ME.id, event.source['screen_name'], '', 'type_new_follower')
             elif is_favorite(event):
-                send_notification('eliahwinkler2@gmail.com', ME.id, event.source['screen_name'], event.target_object['text'], 'type_favorite')
+                send_notification(self.userid, ME.id, event.source['screen_name'], event.target_object['text'], 'type_favorite')
             else:
                 return True
 
@@ -86,7 +97,7 @@ class StreamListener(tweepy.StreamListener):
         print str(status_code)
         if status_code == 420:
             print "Sending Notification..."
-            send_notification('eliahwinkler2@gmail.com', ME.id, '', '', 'type_error_420')
+            send_notification(self.userid, ME.id, '', '', 'type_error_420')
         return True
 
     def on_timeout(self):
