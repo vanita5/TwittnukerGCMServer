@@ -31,10 +31,11 @@ def async(func):
 # TODO Send Push Notification
 
 @async
-def send_notification(userid, account_id, from_user, message, type):
+def send_notification(userid, account_id, from_user, message, image, type):
     data = dict(account = account_id,
                 fromuser = from_user,
                 msg = message,
+                image = image,
                 type = type)
     print("Data:", data)
 

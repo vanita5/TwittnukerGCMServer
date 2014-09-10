@@ -34,7 +34,6 @@ try:
     auth = tweepy.OAuthHandler(KEYS.apikey, KEYS.apisecret)
     auth.set_access_token(KEYS.accesstoken, KEYS.accesstokensecret)
     api = tweepy.API(auth)
-
     ME = api.me()
     prnt('OK\n')
 except Exception, e:
@@ -72,9 +71,9 @@ class StreamListener(tweepy.StreamListener):
     def on_status(self, status):
         try:
             if is_mention(status):
-                send_notification(self.userid, ME.id, status.author.screen_name, status.text, 'type_mention')
+                send_notification(self.userid, ME.id, status.author.screen_name, status.text, status.author.profile_image_url, 'type_mention')
             elif is_retweet(status):
-                send_notification(self.userid, ME.id, status.author.screen_name, status.retweeted_status.text, 'type_retweet')
+                send_notification(self.userid, ME.id, status.author.screen_name, status.retweeted_status.text, status.author.profile_image_url, 'type_retweet')
 
         except Exception, e:
             log.exception('on_status Error\n')
@@ -83,9 +82,10 @@ class StreamListener(tweepy.StreamListener):
     def on_event(self, event):
         try:
             if is_follower(event):
-                send_notification(self.userid, ME.id, event.source['screen_name'], '', 'type_new_follower')
+                send_notification(self.userid, ME.id, event.source['screen_name'], '', event.source['profile_image_url'], 'type_new_follower')
             elif is_favorite(event):
-                send_notification(self.userid, ME.id, event.source['screen_name'], event.target_object['text'], 'type_favorite')
+                send_notification(self.userid, ME.id, event.source['screen_name'], event.target_object['text'], event.source['profile_image_url'], 
+'type_favorite')
             else:
                 return True
 
@@ -97,7 +97,7 @@ class StreamListener(tweepy.StreamListener):
         print str(status_code)
         if status_code == 420:
             print "Sending Notification..."
-            send_notification(self.userid, ME.id, '', '', 'type_error_420')
+            send_notification(self.userid, ME.id, '', '', '', 'type_error_420')
         return True
 
     def on_timeout(self):
